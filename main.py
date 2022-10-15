@@ -14,42 +14,43 @@ class App(tk.Tk):
 
         self.title('Capture Cam [DASHBOARD]')
         self.geometry('400x300')
-        self.style = ttk.Style(self)
+        img = Image.open('images/camera.png')
+        imgTk = ImageTk.PhotoImage(img, master=self, width=10, height=3)
+        self.iconphoto(False, imgTk)
 
-        # title
-        title = ttk.Label(
+        # Image
+        img = Image.open('images/app-title.png')
+        imgResize = img.resize((400,96))
+        imgTk = ImageTk.PhotoImage(imgResize, master=self, width=10, height=2)
+        imgLabel = ttk.Label(
             self,
-            text='Capture Cam',
-            font=('Arial', 20)
+            image=imgTk
         )
-        title.grid(row=0, columnspan=3)
-        subtitle = ttk.Label(
-            self,
-            text='University of Iowa Hackathon 2022',
-            font=('Arial', 8)
-        )
-        subtitle.grid(row=1, columnspan=3)
+        imgLabel.image = imgTk
+        imgLabel.grid(row=0, columnspan=3)
+        # Whitespace
         whitespace = ttk.Label(
             self,
             text=' ',
         )
-        whitespace.grid(row=2, columnspan=3)
-
+        whitespace.grid(row=1, columnspan=3)
         # label
         label = ttk.Label(self, text='Input license plate')
-        label.grid(column=0, row=3, padx=5, columnspan=3, sticky='w')
+        label.grid(column=0, row=2, padx=5, columnspan=3, sticky='w')
         # entry
         textbox = ttk.Entry(self)
-        textbox.grid(column=0, row=4, ipadx=90, padx=5, columnspan=2)
+        textbox.grid(column=0, row=3, ipadx=90, padx=5, columnspan=2)
         # button
         btn = ttk.Button(self, text='Submit')
-        btn.grid(column=2, row=4)
+        btn.grid(column=2, row=3)
 
 ### Initialize Camera
 cap = cv2.VideoCapture(0)
-# Tkinter frame
 root = tk.Tk()
 root.title('Capture Cam [INPUT]')
+img = Image.open('images/camera.png')
+imgTk = ImageTk.PhotoImage(img, master=root, width=10, height=3)
+root.iconphoto(False, imgTk)
 lmain = ttk.Label(root)
 lmain.grid()
 
