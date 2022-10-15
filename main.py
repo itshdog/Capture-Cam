@@ -16,9 +16,34 @@ class App(tk.Tk):
         self.geometry('400x300')
         self.style = ttk.Style(self)
 
+        # title
+        title = ttk.Label(
+            self,
+            text='Capture Cam',
+            font=('Arial', 20)
+        )
+        title.grid(row=0, columnspan=3)
+        subtitle = ttk.Label(
+            self,
+            text='University of Iowa Hackathon 2022',
+            font=('Arial', 8)
+        )
+        subtitle.grid(row=1, columnspan=3)
+        whitespace = ttk.Label(
+            self,
+            text=' ',
+        )
+        whitespace.grid(row=2, columnspan=3)
+
         # label
-        label = ttk.Label(self, text='Capture Cam')
-        label.pack()
+        label = ttk.Label(self, text='Input license plate')
+        label.grid(column=0, row=3, padx=5, columnspan=3, sticky='w')
+        # entry
+        textbox = ttk.Entry(self)
+        textbox.grid(column=0, row=4, ipadx=90, padx=5, columnspan=2)
+        # button
+        btn = ttk.Button(self, text='Submit')
+        btn.grid(column=2, row=4)
 
 ### Initialize Camera
 cap = cv2.VideoCapture(0)
