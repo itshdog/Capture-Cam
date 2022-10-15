@@ -1,2 +1,11 @@
-# Capture-Cam
-UIowa Hackathon 2022
+<img src="/images/github-title.png" width="500">
+
+---
+
+How to use
+===================================================
+---
+
+Pull Requests
+====================================================
+---

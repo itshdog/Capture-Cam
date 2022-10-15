@@ -47,6 +47,7 @@ class App(tk.Tk):
 
 ### Initialize Camera
 cap = cv2.VideoCapture(0)
+# Tkinter frame
 root = tk.Tk()
 root.title('Capture Cam [INPUT]')
 lmain = ttk.Label(root)
