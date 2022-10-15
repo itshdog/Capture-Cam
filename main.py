@@ -1,6 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import ImageTk, Image
+import cv2
 
+### Install Dependencies
+# pip install opencv-python
+# pip install Pillow
+
+### App window
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -10,32 +17,26 @@ class App(tk.Tk):
         self.style = ttk.Style(self)
 
         # label
-        label = ttk.Label(self, text='Name:')
-        label.grid(column=0, row=0, padx=10, pady=10,  sticky='w')
-        # entry
-        textbox = ttk.Entry(self)
-        textbox.grid(column=1, row=0, padx=10, pady=10,  sticky='w')
-        # button
-        btn = ttk.Button(self, text='Show')
-        btn.grid(column=2, row=0, padx=10, pady=10,  sticky='w')
+        label = ttk.Label(self, text='Capture Cam')
+        label.pack()
 
-        # radio button
-        self.selected_theme = tk.StringVar()
-        theme_frame = ttk.LabelFrame(self, text='Themes')
-        theme_frame.grid(padx=10, pady=10, ipadx=20, ipady=20, sticky='w')
+### Initialize Camera
+cap = cv2.VideoCapture(0)
+lmain = ttk.Label()
+lmain.grid()
 
-        for theme_name in self.style.theme_names():
-            rb = ttk.Radiobutton(
-                theme_frame,
-                text=theme_name,
-                value=theme_name,
-                variable=self.selected_theme,
-                command=self.change_theme)
-            rb.pack(expand=True, fill='both')
+### Camera Input
+def video_stream():
+    _, frame = cap.read()
+    cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    img = Image.fromarray(cv2image)
+    imgtk = ImageTk.PhotoImage(image=img)
+    lmain.imgtk = imgtk
+    lmain.configure(image=imgtk)
+    lmain.after(1, video_stream) 
 
-    def change_theme(self):
-        self.style.theme_use(self.selected_theme.get())
-
+### Main
 if __name__ == "__main__":
     app = App()
+    video_stream()
     app.mainloop()
