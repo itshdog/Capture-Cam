@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, Frame
 from PIL import ImageTk, Image
 import cv2
 
@@ -12,7 +12,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title('Capture Cam')
+        self.title('Capture Cam [DASHBOARD]')
         self.geometry('400x300')
         self.style = ttk.Style(self)
 
@@ -47,7 +47,9 @@ class App(tk.Tk):
 
 ### Initialize Camera
 cap = cv2.VideoCapture(0)
-lmain = ttk.Label()
+root = tk.Tk()
+root.title('Capture Cam [INPUT]')
+lmain = ttk.Label(root)
 lmain.grid()
 
 ### Camera Input
