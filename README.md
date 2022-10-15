@@ -1,11 +1,11 @@
-<img src="/images/github-title.png" width="500px">
+<img src="/images/github-title.png" width="100vw">
 
----
+#
 
 How to use
 ===================================================
----
+#
 
 Pull Requests
 ====================================================
----
+#
