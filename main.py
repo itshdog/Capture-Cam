@@ -9,7 +9,7 @@ import re
 # pip install opencv-python
 # pip install Pillow
 
-regex = r'^[A-Z0-9]{0,4}-*\s*[A-Z0-9]{0,4}$'
+regex = r'^[A-Z0-9]{1,4}-*\s*[A-Z0-9]{0,4}$'
 
 ### App window
 class App(tk.Tk):
@@ -20,21 +20,29 @@ class App(tk.Tk):
         self.title('Capture Cam [DASHBOARD]')
         self.geometry('400x300')
         self.resizable(0,0)
+        # Window icon
         img = Image.open('images/camera.png')
         imgTk = ImageTk.PhotoImage(img, master=self, width=10, height=3)
         self.iconphoto(False, imgTk)
 
+        # When submit button is clicked
         def submit(*args):
             out = format(textbox.get())
-            print("Submitted plate: " + out, end = " ")
+            print("Submitted plate: " + out, end = " -> ")
             if not re.match(regex, out):
-                output.config(text = "Invalid Plate!")
-                print("-> Rejected!")
+                print("Rejected!")
+                if len(out) > 0 and len(out) < 9:
+                    output.config(text = "Error: Invalid plate!")
+                elif len(out) >= 9:
+                    output.config(text = "Error: String too long!")
+                else:
+                    output.config(text = "Error: Empty string!")
             else:
                 output.config(text = out)
-                print("-> Accepted!")
+                print("Accepted!")
             textbox.delete(0, tk.END)
 
+        # Format input strings for submit
         def format(string):
             string = string.upper().replace("-", ' ')
             if len(string) > 3 and len(string) <= 7:
@@ -44,7 +52,7 @@ class App(tk.Tk):
             else:
                 return string
             
-        # Image
+        # Title Image
         img = Image.open('images/app-title.png')
         imgResize = img.resize((400,96))
         imgTk = ImageTk.PhotoImage(imgResize, master=self, width=10, height=2)
@@ -71,6 +79,7 @@ class App(tk.Tk):
         btn = ttk.Button(self, command=submit, text='Submit')
         btn.grid(column=2, row=3)
 
+        # Whitespace
         whitespace.grid(row=4, columnspan=3)
 
         # Output Label
@@ -89,11 +98,12 @@ cap = cv2.VideoCapture(0)
 root = tk.Tk()
 root.resizable(0,0)
 root.title('Capture Cam [INPUT]')
+lmain = ttk.Label(root)
+lmain.grid()
+# Window Icon
 img = Image.open('images/camera.png')
 imgTk = ImageTk.PhotoImage(img, master=root, width=10, height=3)
 root.iconphoto(False, imgTk)
-lmain = ttk.Label(root)
-lmain.grid()
 
 ### Camera Input
 def video_stream():
