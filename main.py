@@ -3,6 +3,8 @@ from tkinter import ttk, Frame, StringVar
 from tkinter import *
 from PIL import ImageTk, Image
 from pytesseract import pytesseract
+import numpy as np
+import imutils
 import cv2 as cv
 import re
 
@@ -10,7 +12,7 @@ import re
 # pip install opencv-python
 # pip install Pillow
 
-regex = r'^[A-Z0-9]{1,4}-*\s*[A-Z0-9]{0,4}$'
+regex = r'^[A-Z0-9]{1,5}-*\s*[A-Z0-9]{0,5}$'
 
 ### App window
 class App(tk.Tk):
@@ -87,6 +89,7 @@ class App(tk.Tk):
         outputTitle = ttk.Label(self, text='Current plate')
         outputTitle.grid(column=0, row=5, padx=5, columnspan=3, sticky='w')
         # Output Info
+        global output
         output = ttk.Label(
             self,
             text="---",
@@ -95,7 +98,7 @@ class App(tk.Tk):
         output.grid(column=0, row=6, pady=25, columnspan=3)
 
 def camera():
-    vid = cv.VideoCapture(0)
+    vid = cv.VideoCapture(1)
 
     while(True):
         ret, frame = vid.read()
@@ -110,21 +113,58 @@ def camera():
     cv.destroyAllWindows()
 
 def read_image():
-    path_T = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-    path_I = 'images/test_plate.jpg'
+    pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    path_I = 'images/opencv_frame.png'
 
-    pytesseract.tesseract_cmd = path_T
+    img = cv.imread(path_I, cv.IMREAD_COLOR)
+    img = cv.resize(img, (600,400))
 
-    img = Image.open(path_I)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY) 
+    gray = cv.bilateralFilter(gray, 13, 15, 15) 
 
-    text = pytesseract.image_to_string(img)
+    edged = cv.Canny(gray,30,200)
+    contours = cv.findContours(edged.copy(), cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
+    contours = sorted(contours, key = cv.contourArea, reverse = True)[:10]
+    screenCnt = None
 
-    print(text)
+    for c in contours:
+        peri = cv.arcLength(c, True)
+        approx = cv.approxPolyDP(c, 0.018 * peri, True)
+     
+        if len(approx) == 4:
+            screenCnt = approx
+            break
+    if screenCnt is None:
+        detected = 0
+        print ("No contour detected")
+    else:
+        detected = 1
+
+    if detected == 1:
+        cv.drawContours(img, [screenCnt], -1, (0, 0, 255), 3)
+
+    mask = np.zeros(gray.shape,np.uint8)
+    new_image = cv.drawContours(mask,[screenCnt],0,255,-1,)
+    new_image = cv.bitwise_and(img,img,mask=mask)
+
+    (x, y) = np.where(mask == 255)
+    (topx, topy) = (np.min(x), np.min(y))
+    (bottomx, bottomy) = (np.max(x), np.max(y))
+    Cropped = gray[topx:bottomx+1, topy:bottomy+1]
+
+    text_out = pytesseract.image_to_string(Cropped, config='--psm 11')
+
+    print("Plate number is: " + text_out)
+
+    box = App()
+    output.config(text = text_out)
+
+    cv.waitKey(0)
+    cv.destroyAllWindows()
 
 ### Main
 if __name__ == "__main__":
-    app = App()
     camera()
     read_image()
-    app.mainloop()
     
