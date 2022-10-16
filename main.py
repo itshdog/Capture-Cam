@@ -169,4 +169,4 @@ if __name__ == "__main__":
     read_image("Test4")
     read_image("Test5")
     read_image("Test6")
-    
+    #Gottem
