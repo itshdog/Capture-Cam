@@ -7,8 +7,11 @@ import numpy as np
 import imutils
 import cv2 as cv
 import re
-
-#hello
+import sqlite3
+import pyObjects
+import geocoder
+import datetime
+from datetime import date
 
 ### Install Dependencies
 # pip install opencv-python
@@ -23,7 +26,7 @@ class App(tk.Tk):
 
         # Initialize dashboard
         self.title('Capture Cam [DASHBOARD]')
-        self.geometry('400x300')
+        self.geometry('400x500')
         self.resizable(0,0)
         # Window icon
         img = Image.open('images/camera.png')
@@ -88,6 +91,13 @@ class App(tk.Tk):
             font=("Arial", 25),
         )
         output.grid(column=0, row=6, pady=25, columnspan=3)
+        global output_time
+        output_time = ttk.Label(
+            self,
+            text="",
+            font=("Arial", 12),
+        )
+        output_time.grid(column=0, row=7, pady=25, columnspan=3)
 
 # Format input strings for submitq
 def format(string):
@@ -162,13 +172,35 @@ def read_image(img_input):
     cv.waitKey(0)
     cv.destroyAllWindows()
 
+    return text_out
+
+def checkDB(dbConn, text):
+    plateNum = text
+    plateInfo = pyObjects.search4Plate(dbConn, plateNum)
+
+    if plateInfo == 0:  # error
+        return 0
+    else:
+        return 1
+
+def updateDB(dbConn, text):
+    g = geocoder.ip('me')
+    lat = g.lat
+    longe = g.lng
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    today = date.today()
+    pyObjects.UpdatePlate(dbConn, text, today, now, lat, longe)
+    output_time.config(text = "MATCH FOUND: " + text + " at " + current_time)
+
 ### Main
 if __name__ == "__main__":
+    dbConn = sqlite3.connect('amberalertDB.db')
+    pyObjects.importPlate(dbConn, "CZI7", 0,0,0,0)
     App()
-    read_image("Test1")
-    read_image("Test2")
-    read_image("Test3")
-    read_image("Test4")
-    read_image("Test5")
-    read_image("Test6")
-    #Gottem
+    for i in range(1,7):
+        text = read_image("Test{}".format(i))
+        booler = checkDB(dbConn, text)
+        if booler == 1:
+            print("MATCH FOUND")
+            updateDB(dbConn, text)

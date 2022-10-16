@@ -188,13 +188,11 @@ def updateDB(dbConn, text):
     current_time = now.strftime("%H:%M:%S")
     today = date.today()
     pyObjects.UpdatePlate(dbConn, text, today, now, lat, longe)
-    
-    
 
 ### Main
 if __name__ == "__main__":
     dbConn = sqlite3.connect('amberalertDB.db')
-    pyObjects.importPlate(dbConn, 6655, 0,0,0,0)
+    pyObjects.importPlate(dbConn, CZI7, 0,0,0,0)
     camera()
     text = read_image()
     booler = checkDB(dbConn, text)

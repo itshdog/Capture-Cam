@@ -28,19 +28,17 @@ class license:
     def Longitude(self):
         return self._Longitude
 
-def printall(dbConn):
-    sqlQ = """select all from AmberAlertPlates"""
-    list = []
-
-    try: 
-        s = pyDBaccess.select_n_rows
-        for rows in s:
-            newObj = license(s[0], s[1], s[2], s[3], s[4])
-            list.append(newObj)
+def returnOBJ(dbConn, lnum):
+    sqlQ = """Select plateNum, date, time, latitude, longitude
+    from AmberAlertPlates
+    where plateNum = (?)"""
+    try:
+        s = pyDBaccess.selectOneRow(dbConn, sqlQ, [lnum])
+        newObject = license(s[0], s[1], s[2], s[3], s[4])
     except:
-        return -1
+        return []
 
-    return list
+    return newObject
 
 
 def search4Plate(dbConn, lnum):
@@ -49,8 +47,10 @@ def search4Plate(dbConn, lnum):
         s = pyDBaccess.selectOneRow(dbConn, sqlQ, [lnum])
         newObject = license(s[0], s[1], s[2], s[3], s[4])
     except Exception:
-        return -1
-
+        return 0
+    # if newObject == 0:
+        # return 0;
+    # else:
     return newObject
 
 
@@ -76,16 +76,14 @@ def importPlate(dbConn, plate, date, time, lat, longe):
 
     return 1
 
-
-
-def UpdatePlate(dbConn, plate, date, time, lat, long):
+def UpdatePlate(dbConn, plate, date, time, lat, longe):
     sqlQ = """UPDATE AmberAlertPlates SET date = (?), time = (?), latitude = (?), longitude = (?)
  WHERE plateNum = (?);"""
 
     try:
-        pyDBaccess.performAction(dbConn, sqlQ, [date, time, lat, long, plate])
+        pyDBaccess.performAction(dbConn, sqlQ, [date, time, lat, longe, plate])
+        newObject = license(plate, date, time, lat, longe)
     except Exception as err:
         print(err)
         return 0
-
-    
+    return newObject
