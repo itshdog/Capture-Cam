@@ -66,19 +66,6 @@ class App(tk.Tk):
             text=' ',
         )
         whitespace.grid(row=1, columnspan=3)
-        # Edit Label
-        label = ttk.Label(self, text='Edit license plate')
-        label.grid(column=0, row=2, padx=5, columnspan=3, sticky='w')
-        # Edit Entrybox
-        textbox = ttk.Entry(self)
-        textbox.bind('<Return>', submit)
-        textbox.grid(column=0, row=3, ipadx=90, padx=5, columnspan=2)
-        # Edit Button
-        btn = ttk.Button(self, command=submit, text='Submit')
-        btn.grid(column=2, row=3)
-
-        # Whitespace
-        whitespace.grid(row=4, columnspan=3)
 
         # Output Label
         outputTitle = ttk.Label(self, text='Current plate')
@@ -96,8 +83,17 @@ class App(tk.Tk):
             self,
             text="",
             font=("Arial", 12),
+            foreground='#ff0000'
         )
-        output_time.grid(column=0, row=7, pady=25, columnspan=3)
+        output_time.grid(column=0, row=7, pady=0, columnspan=3)
+        global coord
+        coord = ttk.Label(
+            self,
+            text="",
+            font=("Arial", 12),
+            foreground='#ff0000'
+        )
+        coord.grid(column=0, row=8, pady=0, columnspan=3)
 
 # Format input strings for submitq
 def format(string):
@@ -192,6 +188,7 @@ def updateDB(dbConn, text):
     today = date.today()
     pyObjects.UpdatePlate(dbConn, text, today, now, lat, longe)
     output_time.config(text = "MATCH FOUND: " + text + " at " + current_time)
+    coord.config(text = "LOCATION: " + str(lat) + " , " + str(longe))
 
 ### Main
 if __name__ == "__main__":
