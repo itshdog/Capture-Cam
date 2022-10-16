@@ -1,0 +1,66 @@
+import sqlite3
+import pyObjects
+
+def c1(dbConn):
+    plateNum = input("plate number\n")
+    plateInfo = pyObjects.search4Plate(dbConn, plateNum)
+
+    if plateInfo is None:  # error
+        print("No plate...")
+    else:
+        print(plateInfo.LicensePlateNum)
+        print(plateInfo.Date)
+        print(plateInfo.Time)
+        print(plateInfo.Latitude)
+        print(plateInfo.Longitude)
+    
+
+def c2(dbConn):
+    plate = input("Plate Num? ")
+    date = input("Date? ")
+    time = input("Time? ")
+    lat = input("Latitude? ")
+    longe = input("Longitude? ")
+    
+    add = pyObjects.importPlate(dbConn, plate, date, time, lat, longe)
+    if add == 0:
+        print("\n*****Failed***")
+        menu(dbConn)
+    print("\n successfully inserted")
+    menu(dbConn)
+
+
+
+def c3(dbConn):
+    plate = input("Plate Num? ")
+    date = input("Date? ")
+    time = input("Time? ")
+    lat = input("Latitude? ")
+    longe = input("Longitude? ")
+    update = pyObjects.UpdatePlate(dbConn, plate, date, time, lat, longe)
+    if update == 0:
+        print("\n*****Failed***")
+        menu(dbConn)
+    print("\n successfully inserted")
+    menu(dbConn)
+
+
+
+def menu(dbConn):
+    menuChoice = input('\nPlease enter a command (1-3, x to exit): ')
+    if menuChoice == "1":
+        c1(dbConn)
+    elif menuChoice == "2":
+        c2(dbConn)
+    elif menuChoice == "3":
+        c3(dbConn)
+    elif menuChoice == "x":
+        quit()
+    else:
+        print('**Error, unknown command, try again...\n')
+        menu(dbConn)
+
+
+dbConn = sqlite3.connect('amberalertDB.db') 
+print('** Welcome to the Capture cam **\n')
+menu(dbConn)
