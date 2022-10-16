@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import ttk, Frame, StringVar
 from tkinter import *
 from PIL import ImageTk, Image
-import cv2
+from pytesseract import pytesseract
+import cv2 as cv
 import re
 
 ### Install Dependencies
@@ -92,31 +93,38 @@ class App(tk.Tk):
             font=("Arial", 25),
         )
         output.grid(column=0, row=6, pady=25, columnspan=3)
-            
-### Initialize Camera
-cap = cv2.VideoCapture(0)
-root = tk.Tk()
-root.resizable(0,0)
-root.title('Capture Cam [INPUT]')
-lmain = ttk.Label(root)
-lmain.grid()
-# Window Icon
-img = Image.open('images/camera.png')
-imgTk = ImageTk.PhotoImage(img, master=root, width=10, height=3)
-root.iconphoto(False, imgTk)
 
-### Camera Input
-def video_stream():
-    _, frame = cap.read()
-    cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-    img = Image.fromarray(cv2image)
-    imgtk = ImageTk.PhotoImage(image=img)
-    lmain.imgtk = imgtk
-    lmain.configure(image=imgtk)
-    lmain.after(1, video_stream) 
+def camera():
+    vid = cv.VideoCapture(0)
+
+    while(True):
+        ret, frame = vid.read()
+        cv.imshow('frame', frame)
+        
+        if cv.waitKey(1) & 0xFF == ord('q'):
+            img_name = "images/opencv_frame.png"
+            cv.imwrite(img_name, frame)
+            break
+
+    vid.release()
+    cv.destroyAllWindows()
+
+def read_image():
+    path_T = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    path_I = 'images/test_plate.jpg'
+
+    pytesseract.tesseract_cmd = path_T
+
+    img = Image.open(path_I)
+
+    text = pytesseract.image_to_string(img)
+
+    print(text)
 
 ### Main
 if __name__ == "__main__":
     app = App()
-    video_stream()
+    camera()
+    read_image()
     app.mainloop()
+    
