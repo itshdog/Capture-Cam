@@ -1,5 +1,8 @@
 <img src="/images/github-title.png" width="1000px">
-
+## How to use
+Install needed dependencies, including but not limited to: OpenCV, PyTesseract, Tkinter, SQLite, and PIL
+Run the main.py function with testing images in the images folder. Currently, they're labeled Test1.png-Test6.png
+Press 'q' to exit image processing and continue
 ## Inspiration
 We originally wanted to create a portable dashcam that could recognize license plates through AI. This proved too computationally intense for our purposes, so instead, we opted to mimic AI for more straightforward computations. Our goal is to create a platform for quickly reporting stolen vehicles to police by comparing scanned license plates to a police database of stolen vehicles. Once a match is found, the date and location are recorded to be sent to the authorities
 ## What it does
