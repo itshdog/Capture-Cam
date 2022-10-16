@@ -1,4 +1,5 @@
 <img src="/images/github-title.png" width="1000px">
+
 ## How to use
 Install needed dependencies, including but not limited to: OpenCV, PyTesseract, Tkinter, SQLite, and PIL
 Run the main.py function with testing images in the images folder. Currently, they're labeled Test1.png-Test6.png
