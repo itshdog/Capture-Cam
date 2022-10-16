@@ -44,16 +44,6 @@ class App(tk.Tk):
                 output.config(text = out)
                 print("Accepted!")
             textbox.delete(0, tk.END)
-
-        # Format input strings for submit
-        def format(string):
-            string = string.upper().replace("-", ' ')
-            if len(string) > 3 and len(string) <= 7:
-                return string[:3] + ' ' + string[3:]
-            elif len(string) > 7:
-                return string[:4] + ' ' + string[4:]
-            else:
-                return string
             
         # Title Image
         img = Image.open('images/app-title.png')
@@ -97,6 +87,12 @@ class App(tk.Tk):
         )
         output.grid(column=0, row=6, pady=25, columnspan=3)
 
+# Format input strings for submitq
+def format(string):
+    string = re.sub(r'[^\w]', '', string).upper()
+    string = ''.join(string.splitlines())
+    return string
+
 def camera():
     vid = cv.VideoCapture(1)
 
@@ -112,9 +108,9 @@ def camera():
     vid.release()
     cv.destroyAllWindows()
 
-def read_image():
+def read_image(img_input):
     pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-    path_I = 'images/opencv_frame.png'
+    path_I = 'images/{}.png'.format(img_input)
 
     img = cv.imread(path_I, cv.IMREAD_COLOR)
     img = cv.resize(img, (600,400))
@@ -154,17 +150,23 @@ def read_image():
     Cropped = gray[topx:bottomx+1, topy:bottomy+1]
 
     text_out = pytesseract.image_to_string(Cropped, config='--psm 11')
-
-    print("Plate number is: " + text_out)
-
-    box = App()
+    text_out = format(text_out)
+    
+    print("({}.png) -> ".format(img_input) + text_out)
     output.config(text = text_out)
 
+    cv.imshow("img", img)
+    cv.imshow("Cropped", Cropped)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
 ### Main
 if __name__ == "__main__":
-    camera()
-    read_image()
+    App()
+    read_image("Test1")
+    read_image("Test2")
+    read_image("Test3")
+    read_image("Test4")
+    read_image("Test5")
+    read_image("Test6")
     
