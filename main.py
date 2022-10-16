@@ -26,7 +26,7 @@ class App(tk.Tk):
 
         # Initialize dashboard
         self.title('Capture Cam [DASHBOARD]')
-        self.geometry('400x500')
+        self.geometry('400x350')
         self.resizable(0,0)
         # Window icon
         img = Image.open('images/camera.png')
