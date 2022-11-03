@@ -16,6 +16,9 @@ from datetime import date
 ### Install Dependencies
 # pip install opencv-python
 # pip install Pillow
+# pip install geocoder
+# pip install pytesseract
+# Git Hub test
 
 regex = r'^[A-Z0-9]{1,5}-*\s*[A-Z0-9]{0,5}$'
 
